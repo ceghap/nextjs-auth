@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import Layout from "../components/layout/layout";
+import { signIn } from "next-auth/react";
 
 const Login = () => {
   return (
@@ -27,7 +28,14 @@ const Login = () => {
           <hr />
           <div>
             <div>
-              <button type="submit">Sign In with Google</button>
+              <button
+                onClick={() =>
+                  signIn("google", { callbackUrl: "http://localhost:3000" })
+                }
+                type="button"
+              >
+                Sign In with Google
+              </button>
             </div>
           </div>
         </form>
