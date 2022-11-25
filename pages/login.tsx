@@ -29,9 +29,6 @@ const Login = () => {
             <div>
               <button type="submit">Sign In with Google</button>
             </div>
-            <div>
-              <button type="submit">Sign In with Github</button>
-            </div>
           </div>
         </form>
         <p>
