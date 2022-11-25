@@ -37,6 +37,16 @@ const Login = () => {
                 Sign In with Google
               </button>
             </div>
+            <div>
+              <button
+                onClick={() =>
+                  signIn("github", { callbackUrl: "http://localhost:3000" })
+                }
+                type="button"
+              >
+                Sign In with Github
+              </button>
+            </div>
           </div>
         </form>
         <p>
