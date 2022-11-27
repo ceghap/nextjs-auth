@@ -25,7 +25,10 @@ const Login = () => {
     resolver: zodResolver(FormSchema),
   });
 
-  const onSubmit: SubmitHandler<SchemaType> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<SchemaType> = (data) => {
+    console.log(data);
+    reset();
+  };
   console.log(watch("email"));
   console.log(watch("password"));
 
