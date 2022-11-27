@@ -2,9 +2,33 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import Layout from "../components/layout/layout";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const FormSchema = z.object({
+  email: z.string().email().min(2),
+  password: z.string().min(6),
+});
+
+type SchemaType = z.infer<typeof FormSchema>;
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<SchemaType>({
+    resolver: zodResolver(FormSchema),
+  });
+
+  const onSubmit: SubmitHandler<SchemaType> = (data) => console.log(data);
+  console.log(watch("email"));
+  console.log(watch("password"));
+
   return (
     <Layout>
       <Head>
@@ -15,12 +39,18 @@ const Login = () => {
       <h1>Login</h1>
 
       <div>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <input type="email" name="email" placeholder="email" />
+            <input type="email" placeholder="email" {...register("email")} />
+            {errors.email?.message && <p>{errors.email?.message}</p>}
           </div>
           <div>
-            <input type="password" name="password" placeholder="password" />
+            <input
+              type="password"
+              placeholder="password"
+              {...register("password")}
+            />
+            {errors.password?.message && <p>{errors.password?.message}</p>}
           </div>
           <div>
             <button type="submit">Login</button>

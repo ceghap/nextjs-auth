@@ -1,9 +1,50 @@
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import Layout from "../components/layout/layout";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const FormSchema = z
+  .object({
+    username: z.string().min(4),
+    email: z.string().email().min(2),
+    password: z.string().min(6),
+    cpassword: z.string().min(6),
+  })
+  .superRefine(({ password, cpassword }, ctx) => {
+    if (cpassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords did not match",
+      });
+    }
+  });
+
+type SchemaType = z.infer<typeof FormSchema>;
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<SchemaType>({
+    resolver: zodResolver(FormSchema),
+  });
+
+  const onSubmit: SubmitHandler<SchemaType> = (data) => {
+    console.log(data);
+    // reset();
+  };
+
+  console.log(watch("username"));
+  console.log(watch("email"));
+  console.log(watch("password"));
+  console.log(watch("cpassword"));
+
   return (
     <Layout>
       <Head>
@@ -13,22 +54,34 @@ const Register = () => {
       </Head>
       <h1>Register</h1>
       <div>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <input type="text" name="username" placeholder="Username" />
+            <input
+              type="text"
+              placeholder="Username"
+              {...register("username")}
+            />
+            {errors.username?.message && <p>{errors.username?.message}</p>}
           </div>
           <div>
-            <input type="email" name="email" placeholder="Email" />
-          </div>
-          <div>
-            <input type="password" name="password" placeholder="Password" />
+            <input type="email" placeholder="Email" {...register("email")} />
+            {errors.email?.message && <p>{errors.email?.message}</p>}
           </div>
           <div>
             <input
               type="password"
-              name="cpassword"
-              placeholder="Confirm Password"
+              placeholder="Password"
+              {...register("password")}
             />
+            {errors.password?.message && <p>{errors.password?.message}</p>}
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              {...register("cpassword")}
+            />
+            {errors.cpassword?.message && <p>{errors.cpassword?.message}</p>}
           </div>
           <div>
             <button type="submit">Register</button>
